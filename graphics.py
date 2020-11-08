@@ -1,7 +1,5 @@
 import sys, random, tkinter as tk
 
-# generates a level, including obstacle placement.
-
 def generateEvent(spacing, variability):
     return random.randint(spacing-variability, spacing+variability)
 
