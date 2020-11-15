@@ -1,4 +1,5 @@
 import random
+import Solution
 
 airtime = 3
 jumpchance = .3
@@ -114,11 +115,63 @@ def RunNextTrial(path, tests, initialized):
         print(jumpLoc[j])
         Pass = PassOn(trials[j].length, jumpLoc[j])
         prevGen.append(Pass)
+
+
+# Convert from form 0 = stay, 1 = jump, and insert hangtime after jumps
+def convertBinary(jumps):
+    moves = []
+    for i in range(len(jumps)):
+        if jumps[i] == 0:
+            moves += ['stay']
+        else:
+            moves += ['jump']
+            for j in range(airtime):
+                moves += ['hang']
+                i += 1
+    ret = Solution.Solution
+    ret.moves = moves
+    return ret
+
+# Convert to form 0=stay, 1=jump, and hangtime doesn't matter
+def makeToBinary(moves):
+    ret = []
+    for i in range(len(moves)):
+        if moves[i] == 'jump':
+            ret += [1]
+        elif moves[i] == 'stay':
+            ret += [0]
+        else:
+            if random.random()<jumpchance:
+                ret += [1]
+            else:
+                ret += [0]
+    return ret
+
 p = GeneratePath()
 print(p)
-trials = 1
+trials = 4
 RunFirstTrial(p, trials)
 jumpLoc.clear()
-# for i in prevGen:
-#     print(i.length)
+solutions = []
+average = 0
+for i in range(trials): #make list of Solutions and get average score
+    solution = convertBinary(prevGen[i].pattern)
+    average += len(solution.moves)
+    solutions += [solution]
+average /= trials
+
+newSolutions = solutions
+for i in range(len(solutions)-1,0,-1): #purge em
+    if len(solutions[i].moves) < average:
+        del solutions[i]
+
+prevGen.clear()
+
+for i in range(trials): #randomly select and breed parents
+    parent1 = solutions[random.randint(0,len(solutions)-1)]
+    parent2 = solutions[random.randint(0,len(solutions)-1)]
+    thisChild = Solution.Solution(parent1,parent2)
+    binaryMoves = makeToBinary(thisChild.moves)
+    prevGen += [PassOn(len(binaryMoves),binaryMoves)]
+
 RunNextTrial(p,trials,prevGen)

@@ -9,13 +9,13 @@ hang: Jumped within the last [Solution.hangtime] tickes
 dead: Dead from this point forward
 """
 
+
 class Solution:
 	hangtime = 3
 	jumpChance = .3
 
 	def __init__(self, parent1=None, parent2=None):
 		random.seed()
-		# TODO: breed solutions
 		self.moves = []
 		self.parent1 = parent1
 		self.parent2 = parent2
@@ -78,10 +78,10 @@ class Solution:
 		else:
 			return 'stay'
 
-	# Died at some point,
+	# Died at some point, delete last couple moves
 	def fillInDead(self, deathTick):
 		# TODO: look back and mark hangtimes as dead, because it's inevitable?
-		# TODO: also probably just pop from moves
+		# TODO: also probably just pop from moves instead
 		for i in range(deathTick, len(self.moves)-1):
 			self.moves[i] = 'dead'
 
