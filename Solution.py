@@ -81,6 +81,7 @@ class Solution:
 	# Died at some point,
 	def fillInDead(self, deathTick):
 		# TODO: look back and mark hangtimes as dead, because it's inevitable?
+		# TODO: also probably just pop from moves
 		for i in range(deathTick, len(self.moves)-1):
 			self.moves[i] = 'dead'
 
