@@ -27,6 +27,7 @@ class Solution:
 
 	# Breed parents to make a new solution
 	def mergeParents(self):
+
 		shorter = None
 		longer = None
 		if len(self.parent1.moves) > len(self.parent2.moves):
@@ -62,6 +63,8 @@ class Solution:
 			if self.moves[i] == "jump":
 				for j in range(self.hangtime):
 					self.moves[i+j+1] = "hang"
+		
+		self.removeDead()
 
 	# Randomly pick a move
 	def newMove(self):
@@ -79,11 +82,11 @@ class Solution:
 			return 'stay'
 
 	# Died at some point, delete last couple moves
-	def fillInDead(self, deathTick):
-		# TODO: look back and mark hangtimes as dead, because it's inevitable?
-		# TODO: also probably just pop from moves instead
-		for i in range(deathTick, len(self.moves)-1):
-			self.moves[i] = 'dead'
+	def removeDead(self):
+		while self.moves[-1] == 'hang':
+			del self.moves[-1]
+		if len(self.moves) > 0:
+			del self.moves[-1]
 
 	# Recursively print the lineage
 	def printLineage(self, level=0):
@@ -98,13 +101,14 @@ class Solution:
 		return len(self.moves)
 
 
-start1 = Solution()
-while len(start1.moves) < 10:
-	start1.newMove()
-start2 = Solution()
-while len(start2.moves) < 5:
-	start2.newMove()
-kid1 = Solution(start1, start2)
-kid2 = Solution(start1, start2)
-baby = Solution(kid1, kid2)  # Note: baby is very inbred. Proceed with caution
-baby.printLineage()
+if __name__ == "__main__":
+	start1 = Solution()
+	while len(start1.moves) < 10:
+		start1.newMove()
+	start2 = Solution()
+	while len(start2.moves) < 5:
+		start2.newMove()
+	kid1 = Solution(start1, start2)
+	kid2 = Solution(start1, start2)
+	baby = Solution(kid1, kid2)  # Note: baby is very inbred. Proceed with caution
+	baby.printLineage()

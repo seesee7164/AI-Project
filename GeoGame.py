@@ -31,7 +31,7 @@ class avatar:
             self.hit()
         if not self.InAir and obstacles[0]:  #checking if the object and the obstacle are both on the ground
             self.hit()
-        print(self.InAir,self.lives)
+        #print(self.InAir,self.lives)
         if not self.InAir and flag == 1:    #jumping function
             self.jump()
         elif self.InAir:
@@ -45,7 +45,7 @@ class avatar:
             self.hit()
         if not self.InAir and obstacles[0]:  #checking if the object and the obstacle are both on the ground
             self.hit()
-        print(self.InAir,self.lives)
+        #print(self.InAir,self.lives)
         if not self.InAir and flag == 1:    #jumping function
             self.jump()
         elif self.InAir:
@@ -120,7 +120,8 @@ def RunNextTrial(path, tests, initialized):
 # Convert from form 0 = stay, 1 = jump, and insert hangtime after jumps
 def convertBinary(jumps):
     moves = []
-    for i in range(len(jumps)):
+    i = 0
+    while i<len(jumps):
         if jumps[i] == 0:
             moves += ['stay']
         else:
@@ -128,6 +129,7 @@ def convertBinary(jumps):
             for j in range(airtime):
                 moves += ['hang']
                 i += 1
+        i += 1
     ret = Solution.Solution
     ret.moves = moves
     return ret
@@ -147,31 +149,49 @@ def makeToBinary(moves):
                 ret += [0]
     return ret
 
+def doRun():
+    global prevGen
+    jumpLoc.clear()
+    solutions = []
+    average = 0
+    for i in range(trials): #make list of Solutions and get average score
+        solution = convertBinary(prevGen[i].pattern)
+        average += len(solution.moves)
+        print("add ",len(solution.moves))
+        solutions += [solution]
+    average = average/trials
+    print("average: ",average)
+
+    #print("SOLUTIONS:")
+    newSolutions = solutions
+    for i in range(len(solutions)-1,0,-1): #purge em
+        if len(solutions[i].moves) < average:
+            del solutions[i]
+        else:
+            print(solutions[i].moves)
+
+    prevGen.clear()
+
+    for i in range(trials): #randomly select and breed parents
+        parent1 = solutions[random.randint(0,len(solutions)-1)]
+        parent2 = solutions[random.randint(0,len(solutions)-1)]
+        thisChild = Solution.Solution(parent1,parent2)
+        binaryMoves = makeToBinary(thisChild.moves)
+        prevGen += [PassOn(len(binaryMoves),binaryMoves)]
+
+    RunNextTrial(p,trials,prevGen)
+
 p = GeneratePath()
 print(p)
+print("RUNNING")
 trials = 4
 RunFirstTrial(p, trials)
-jumpLoc.clear()
-solutions = []
-average = 0
-for i in range(trials): #make list of Solutions and get average score
-    solution = convertBinary(prevGen[i].pattern)
-    average += len(solution.moves)
-    solutions += [solution]
-average /= trials
 
-newSolutions = solutions
-for i in range(len(solutions)-1,0,-1): #purge em
-    if len(solutions[i].moves) < average:
-        del solutions[i]
-
-prevGen.clear()
-
-for i in range(trials): #randomly select and breed parents
-    parent1 = solutions[random.randint(0,len(solutions)-1)]
-    parent2 = solutions[random.randint(0,len(solutions)-1)]
-    thisChild = Solution.Solution(parent1,parent2)
-    binaryMoves = makeToBinary(thisChild.moves)
-    prevGen += [PassOn(len(binaryMoves),binaryMoves)]
-
-RunNextTrial(p,trials,prevGen)
+#TODO: make into function
+doRun()
+doRun()
+doRun()
+doRun()
+doRun()
+doRun()
+doRun()
