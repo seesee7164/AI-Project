@@ -103,6 +103,8 @@ def main():
     l = Level(variability=3, readIn="data.txt")
     
     top = tk.Tk()
+    top.title("GamerBot 9000")
+    top.iconbitmap("joystick.ico")
     windowWidth = max((l.getLevelWidth()*SQUARESIZE), SQUARESIZE*15) # we want the window to be at least 15 tiles in width for good display purposes
     w = tk.Canvas(top, width=windowWidth, height=SQUARESIZE*2)
     w.pack()
