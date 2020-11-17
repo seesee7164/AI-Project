@@ -72,7 +72,23 @@ def GeneratePath():
         path.append([a,b])
     return path
 
-
+def GenerateEasyPath():
+    path = [[0,0]]
+    c = 3
+    count = 0
+    for i in range(pathlength - 1):
+        a = 0
+        b = 0
+        if (count > 0):
+            count -= 1
+        elif random.randint(1,3) == 1:
+            a = 1
+            count = airtime
+        elif random.randint(1,3) == 1:
+            b = 1
+            count = airtime
+        path.append([a,b])
+    return path
 
 def RunFirstTrial(path,tests):
     length = len(path)
@@ -188,7 +204,7 @@ def doRun():
     RunNextTrial(p,trials,prevGen)
     return False
 
-p = GeneratePath()
+p = GenerateEasyPath()
 print(p)
 print("RUNNING")
 RunFirstTrial(p, trials)
