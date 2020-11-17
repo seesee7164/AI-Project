@@ -110,13 +110,11 @@ class Level:
             if self.movements[i] == 0:
                 if self.level[i][0] == 1:
                     w.create_rectangle(x3, y3, x4, y4, fill="red")
-                    return
                 else: 
                     w.create_rectangle(x3, y3, x4, y4, fill="green")
             else:
                 if self.level[i][1] == 1:
-                    w.create_rectangle(x1, y1, x2, y2, fill="green")
-                    return
+                    w.create_rectangle(x1, y1, x2, y2, fill="red")
                 else: 
                     w.create_rectangle(x1, y1, x2, y2, fill="green")
 
