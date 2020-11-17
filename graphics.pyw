@@ -1,4 +1,5 @@
 import random, time, tkinter as tk
+from tkinter import Variable
 
 def generateEvent(spacing, variability):
     return random.randint(spacing-variability, spacing+variability)
@@ -29,6 +30,8 @@ class Level:
 
             for move in data[1][0]:
                 self.movements.append(int(move))
+
+            f.close()
 
         else: 
             event = generateEvent(spacing, variability)
@@ -65,8 +68,32 @@ class Level:
             # drawing sky square
             w.create_rectangle(x1, y1, x2, y2, fill=skyColor)
 
-    def animate(self, top, w, i=0):
-        if i >= len(self.level): return
+    def partialDrawLevel(self, w, i):
+        bottomColor = "white"
+        skyColor = "white"
+
+        if self.level[i][0] == 1: bottomColor = "black"
+        if self.level[i][1] == 1: skyColor = "black"
+
+        x1 = SQUARESIZE * i
+        y1 = 0
+        x2 = x1 + SQUARESIZE
+        y2 = y1 + SQUARESIZE
+        x3 = x1
+        y3 = SQUARESIZE
+        x4 = x3 + SQUARESIZE
+        y4 = y3 + SQUARESIZE
+
+        # drawing floor square
+        w.create_rectangle(x3, y3, x4, y4, fill=bottomColor)
+
+        # drawing sky square
+        w.create_rectangle(x1, y1, x2, y2, fill=skyColor)
+
+    def animate(self, top, w, leaveTrail, frameSpeed, i=0):
+        if i >= len(self.level): 
+            if not leaveTrail: self.partialDrawLevel(w, i-1)
+            return
         else:
             x1 = SQUARESIZE * i
             y1 = 0
@@ -83,7 +110,9 @@ class Level:
             else:
                 w.create_rectangle(x1, y1, x2, y2, fill="green")
 
-            top.after(50, lambda: self.animate(top, w, i+1))
+            if not leaveTrail and i > 0: self.partialDrawLevel(w, i-1)
+
+            top.after(frameSpeed, lambda: self.animate(top, w, leaveTrail, frameSpeed, i+1))
 
     def getLevelWidth(self):
         return len(self.level)
@@ -114,10 +143,27 @@ def main():
 
     l.drawLevel(w)
 
+    isTicked = tk.IntVar()
     buttonDiv = tk.Canvas(top)
+
+    msTextLabel = tk.Label(buttonDiv, text="Frame speed (ms): ")
+    msTextLabel.pack(side=tk.LEFT)
+
+    msVal = tk.StringVar()
+    msVal.set("50")
+    msEntry = tk.Entry(buttonDiv, width=5, textvariable=msVal)
+    msEntry.pack(side=tk.LEFT)
+
+    msSpacer = tk.Label(buttonDiv, text=" ")
+    msSpacer.pack(side=tk.LEFT)
+
     buttonDiv.pack()
-    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w))
+    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w, isTicked.get(), int(msVal.get())))
     animateButton.pack(side=tk.LEFT)
+    
+    trailCheckbox = tk.Checkbutton(buttonDiv, variable=isTicked, text="Leave trail?", onvalue=1, offvalue=0)
+    trailCheckbox.pack(side=tk.RIGHT)
+
     resetButton = tk.Button(buttonDiv, text="Reset", width=10, command=lambda: l.drawLevel(w))
     resetButton.pack(side=tk.RIGHT)
 
