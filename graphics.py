@@ -30,8 +30,6 @@ class Level:
             for move in data[1][0]:
                 self.movements.append(int(move))
 
-            print(data)
-
         else: 
             event = generateEvent(spacing, variability)
             for i in range(width):
@@ -85,7 +83,7 @@ class Level:
             else:
                 w.create_rectangle(x1, y1, x2, y2, fill="green")
 
-            top.after(100, lambda: self.animate(top, w, i+1))
+            top.after(50, lambda: self.animate(top, w, i+1))
 
     def getLevelWidth(self):
         return len(self.level)
@@ -103,7 +101,6 @@ def main():
     SQUARESIZE = 15 # yes we need two lines here
 
     l = Level(variability=3, readIn="data.txt")
-    print(l)
     
     top = tk.Tk()
     windowWidth = max((l.getLevelWidth()*SQUARESIZE), SQUARESIZE*15) # we want the window to be at least 15 tiles in width for good display purposes
