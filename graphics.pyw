@@ -114,6 +114,8 @@ class Level:
 
             if not leaveTrail and i > 1: self.partialDrawLevel(w, i-2)
 
+            try: frameSpeed = int(frameSpeed)
+            except: frameSpeed = 50
             top.after(frameSpeed, lambda: self.animate(top, w, leaveTrail, frameSpeed, i+1))
 
     def getLevelWidth(self):
@@ -160,9 +162,7 @@ def main():
     msSpacer.pack(side=tk.LEFT)
 
     buttonDiv.pack()
-    try: msValGot = int(msVal.get()) 
-    except: msValGot = 50
-    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w, isTicked.get(), msValGot))
+    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w, isTicked.get(), msVal.get()))
     animateButton.pack(side=tk.LEFT)
     
     trailCheckbox = tk.Checkbutton(buttonDiv, variable=isTicked, text="Leave trail?", onvalue=1, offvalue=0)
