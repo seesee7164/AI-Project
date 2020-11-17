@@ -83,10 +83,13 @@ class Solution:
 
 	# Died at some point, delete last couple moves
 	def removeDead(self):
+		# delete anything where it's hanging in the air
 		while self.moves[-1] == 'hang':
 			del self.moves[-1]
-		if len(self.moves) > 0:
-			del self.moves[-1]
+		#delete last two moves (or 1 or 0 if it's not long enough)
+		for i in range(2):
+			if len(self.moves) > 0:
+				del self.moves[-1]
 
 	# Recursively print the lineage
 	def printLineage(self, level=0):
