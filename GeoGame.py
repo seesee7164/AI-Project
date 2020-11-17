@@ -156,6 +156,10 @@ def doRun():
     average = 0
     for i in range(trials): #make list of Solutions and get average score
         solution = convertBinary(prevGen[i].pattern)
+        if len(solution.moves) >= pathlength:
+            print("FOUND AN OPTIMAL PATH:")
+            print(solution.moves)
+            return True
         average += len(solution.moves)
         print("add ",len(solution.moves))
         solutions += [solution]
@@ -180,6 +184,7 @@ def doRun():
         prevGen += [PassOn(len(binaryMoves),binaryMoves)]
 
     RunNextTrial(p,trials,prevGen)
+    return False
 
 p = GeneratePath()
 print(p)
@@ -188,10 +193,6 @@ trials = 4
 RunFirstTrial(p, trials)
 
 #TODO: make into function
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
+for i in range(10):
+    if doRun() == False:
+        break
