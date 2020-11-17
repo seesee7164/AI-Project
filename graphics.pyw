@@ -92,7 +92,9 @@ class Level:
 
     def animate(self, top, w, leaveTrail, frameSpeed, i=0):
         if i >= len(self.level): 
-            if not leaveTrail: self.partialDrawLevel(w, i-1)
+            if not leaveTrail: 
+                self.partialDrawLevel(w, i-1)
+                self.partialDrawLevel(w, i-2)
             return
         else:
             x1 = SQUARESIZE * i
@@ -106,12 +108,20 @@ class Level:
 
             # hero stays on ground
             if self.movements[i] == 0:
-                w.create_rectangle(x3, y3, x4, y4, fill="green")
+                if self.level[i][0] == 1:
+                    w.create_rectangle(x3, y3, x4, y4, fill="red")
+                else: 
+                    w.create_rectangle(x3, y3, x4, y4, fill="green")
             else:
-                w.create_rectangle(x1, y1, x2, y2, fill="green")
+                if self.level[i][1] == 1:
+                    w.create_rectangle(x1, y1, x2, y2, fill="red")
+                else: 
+                    w.create_rectangle(x1, y1, x2, y2, fill="green")
 
-            if not leaveTrail and i > 0: self.partialDrawLevel(w, i-1)
+            if not leaveTrail and i > 1: self.partialDrawLevel(w, i-2)
 
+            try: frameSpeed = int(frameSpeed)
+            except: frameSpeed = 50
             top.after(frameSpeed, lambda: self.animate(top, w, leaveTrail, frameSpeed, i+1))
 
     def getLevelWidth(self):
@@ -158,7 +168,7 @@ def main():
     msSpacer.pack(side=tk.LEFT)
 
     buttonDiv.pack()
-    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w, isTicked.get(), int(msVal.get())))
+    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w, isTicked.get(), msVal.get()))
     animateButton.pack(side=tk.LEFT)
     
     trailCheckbox = tk.Checkbutton(buttonDiv, variable=isTicked, text="Leave trail?", onvalue=1, offvalue=0)
