@@ -112,8 +112,13 @@ def main():
 
     l.drawLevel(w)
 
-    animateButton = tk.Button(top, text="Animate!", command=lambda: l.animate(top, w))
-    animateButton.pack()
+    buttonDiv = tk.Canvas(top)
+    buttonDiv.pack()
+    animateButton = tk.Button(buttonDiv, text="Animate!", width=10, command=lambda: l.animate(top, w))
+    animateButton.pack(side=tk.LEFT)
+    resetButton = tk.Button(buttonDiv, text="Reset", width=10, command=lambda: l.drawLevel(w))
+    resetButton.pack(side=tk.RIGHT)
+
     tk.mainloop()
 
 if __name__ == "__main__":
