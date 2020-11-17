@@ -104,7 +104,10 @@ def main():
     
     top = tk.Tk()
     top.title("GamerBot 9000")
-    top.iconbitmap("joystick.ico")
+
+    try: top.iconbitmap("joystick.ico")
+    except tk.TclError: pass
+
     windowWidth = max((l.getLevelWidth()*SQUARESIZE), SQUARESIZE*15) # we want the window to be at least 15 tiles in width for good display purposes
     w = tk.Canvas(top, width=windowWidth, height=SQUARESIZE*2)
     w.pack()
