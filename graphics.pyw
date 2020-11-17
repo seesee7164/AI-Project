@@ -92,7 +92,7 @@ class Level:
 
     def animate(self, top, w, leaveTrail, frameSpeed, i=0):
         if i >= len(self.level): 
-            self.partialDrawLevel(w, i-1)
+            if not leaveTrail: self.partialDrawLevel(w, i-1)
             return
         else:
             x1 = SQUARESIZE * i
