@@ -9,9 +9,9 @@ hang: Jumped within the last [Solution.hangtime] tickes
 dead: Dead from this point forward
 """
 
+hangtime = 1
 
 class Solution:
-	hangtime = 3
 	jumpChance = .3
 
 	def __init__(self, parent1=None, parent2=None):
@@ -59,9 +59,9 @@ class Solution:
 				else:
 					self.moves += [longer[i]]
 		# fill in moves after jump with hangtime
-		for i in range(len(self.moves)-self.hangtime):
+		for i in range(len(self.moves)-hangtime):
 			if self.moves[i] == "jump":
-				for j in range(self.hangtime):
+				for j in range(hangtime):
 					self.moves[i+j+1] = "hang"
 
 		self.removeDead()
@@ -70,7 +70,7 @@ class Solution:
 	def newMove(self):
 		if random.random() <= self.jumpChance:
 			self.moves += ['jump']
-			for i in range(self.hangtime):
+			for i in range(hangtime):
 				self.moves += ['hang']
 		else:
 			self.moves += ['stay']
@@ -87,7 +87,7 @@ class Solution:
 		while self.moves[-1] == 'hang':
 			del self.moves[-1]
 		#delete last two moves (or 1 or 0 if it's not long enough)
-		for i in range(self.hangtime+1):
+		for i in range(hangtime+1):
 			if len(self.moves) > 0:
 				del self.moves[-1]
 

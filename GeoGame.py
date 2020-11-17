@@ -1,7 +1,7 @@
 import random
 import Solution
 
-airtime = 3 #       Number of ticks it stays in the air for
+airtime = Solution.hangtime
 jumpchance = .3 #   % chance that it will jump at any given tick
 pathlength = 100 #  Length of path
 trials = 25 #       Population size
@@ -213,3 +213,10 @@ for i in range(100):
     if doRun() == True:
         break
 print(p)
+
+f = open("path.txt",'w')
+for i in range(len(p)):
+    stringyboi = str(p[i][0]) + str(p[i][1]) + ' '
+    f.write(stringyboi)
+f.write("\n00000")
+f.close()
