@@ -1,10 +1,11 @@
 import random
 import Solution
 
-airtime = 3
-jumpchance = .3
-pathlength = 100
-trials = 10
+airtime = 3 #       Number of ticks it stays in the air for
+jumpchance = .3 #   % chance that it will jump at any given tick
+pathlength = 100 #  Length of path
+trials = 25 #       Population size
+
 prevGen = []
 jumpLoc =[]
 class avatar:
@@ -192,6 +193,7 @@ print(p)
 print("RUNNING")
 RunFirstTrial(p, trials)
 
-while True:
+for i in range(100):
     if doRun() == True:
         break
+print(p)
