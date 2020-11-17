@@ -216,6 +216,14 @@ while True:
         break
 print(p)
 
+successfulRun = runResult[1]
+i = 0
+while i<len(successfulRun):
+    if successfulRun[i] == 1:
+        for j in range(airtime):
+            i += 1
+            successfulRun[i] = 1
+
 f = open("path.txt",'w')
 for i in range(len(p)):
     pathString = str(p[i][0]) + str(p[i][1]) + ' '
