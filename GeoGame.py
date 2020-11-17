@@ -1,9 +1,11 @@
 import random
 import Solution
 
-airtime = 3
-jumpchance = .3
-pathlength = 20
+airtime = 3 #       Number of ticks it stays in the air for
+jumpchance = .3 #   % chance that it will jump at any given tick
+pathlength = 100 #  Length of path
+trials = 25 #       Population size
+
 prevGen = []
 jumpLoc =[]
 class avatar:
@@ -70,7 +72,23 @@ def GeneratePath():
         path.append([a,b])
     return path
 
-
+def GenerateEasyPath():
+    path = [[0,0]]
+    c = 3
+    count = 0
+    for i in range(pathlength - 1):
+        a = 0
+        b = 0
+        if (count > 0):
+            count -= 1
+        elif random.randint(1,3) == 1:
+            a = 1
+            count = airtime
+        elif random.randint(1,3) == 1:
+            b = 1
+            count = airtime
+        path.append([a,b])
+    return path
 
 def RunFirstTrial(path,tests):
     length = len(path)
@@ -86,8 +104,8 @@ def RunFirstTrial(path,tests):
                 jumpLoc[j].append(f)
     prevGen.clear()
     for j in range(tests):
-        print(trials[j].length)
-        print(jumpLoc[j])
+        #print(trials[j].length)
+        #print(jumpLoc[j])
         Pass = PassOn(trials[j].length, jumpLoc[j])
         prevGen.append(Pass)
 
@@ -111,8 +129,8 @@ def RunNextTrial(path, tests, initialized):
                     jumpLoc[j].append(f)
     prevGen.clear()
     for j in range(tests):
-        print(trials[j].length)
-        print(jumpLoc[j])
+        #print(trials[j].length)
+        #print(jumpLoc[j])
         Pass = PassOn(trials[j].length, jumpLoc[j])
         prevGen.append(Pass)
 
@@ -154,21 +172,25 @@ def doRun():
     jumpLoc.clear()
     solutions = []
     average = 0
+    longest = 0
     for i in range(trials): #make list of Solutions and get average score
         solution = convertBinary(prevGen[i].pattern)
+        if len(solution.moves) >= pathlength:
+            print("FOUND AN OPTIMAL PATH:")
+            print(prevGen[i].pattern)
+            return True
+        elif len(solution.moves) > longest:
+            longest = len(solution.moves)
         average += len(solution.moves)
-        print("add ",len(solution.moves))
         solutions += [solution]
     average = average/trials
-    print("average: ",average)
+    print(longest)
 
     #print("SOLUTIONS:")
     newSolutions = solutions
     for i in range(len(solutions)-1,0,-1): #purge em
         if len(solutions[i].moves) < average:
             del solutions[i]
-        else:
-            print(solutions[i].moves)
 
     prevGen.clear()
 
@@ -180,18 +202,14 @@ def doRun():
         prevGen += [PassOn(len(binaryMoves),binaryMoves)]
 
     RunNextTrial(p,trials,prevGen)
+    return False
 
-p = GeneratePath()
+p = GenerateEasyPath()
 print(p)
 print("RUNNING")
-trials = 4
 RunFirstTrial(p, trials)
 
-#TODO: make into function
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
-doRun()
+for i in range(100):
+    if doRun() == True:
+        break
+print(p)
