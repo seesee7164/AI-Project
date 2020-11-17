@@ -3,7 +3,7 @@ import Solution
 
 airtime = Solution.hangtime
 jumpchance = .3 #   % chance that it will jump at any given tick
-pathlength = 100 #  Length of path
+pathlength = 50 #  Length of path
 trials = 25 #       Population size
 
 prevGen = []
@@ -178,7 +178,7 @@ def doRun():
         if len(solution.moves) >= pathlength:
             print("FOUND AN OPTIMAL PATH:")
             print(prevGen[i].pattern)
-            return True
+            return (True, prevGen[i].pattern)
         elif len(solution.moves) > longest:
             longest = len(solution.moves)
         average += len(solution.moves)
@@ -202,21 +202,26 @@ def doRun():
         prevGen += [PassOn(len(binaryMoves),binaryMoves)]
 
     RunNextTrial(p,trials,prevGen)
-    return False
+    return (False, [])
 
 p = GenerateEasyPath()
 print(p)
 print("RUNNING")
 RunFirstTrial(p, trials)
 
-for i in range(100):
-    if doRun() == True:
+runResult = None
+while True:
+    runResult = doRun()
+    if runResult[0] == True:
         break
 print(p)
 
 f = open("path.txt",'w')
 for i in range(len(p)):
-    stringyboi = str(p[i][0]) + str(p[i][1]) + ' '
-    f.write(stringyboi)
-f.write("\n00000")
+    pathString = str(p[i][0]) + str(p[i][1]) + ' '
+    f.write(pathString)
+runString = "\n"
+for i in range(len(runResult[1])):
+    runString += str(runResult[1][i])
+f.write(runString)
 f.close()
