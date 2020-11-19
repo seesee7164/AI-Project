@@ -11,7 +11,7 @@ dead: Dead from this point forward
 
 hangtime = 3
 jumpChance = .3
-mutationChance = .1
+mutationChance = .01
 
 class Solution:
 	def __init__(self, parent1=None, parent2=None):

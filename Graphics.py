@@ -158,13 +158,14 @@ def main():
     l.drawLevel(w)
 
     isTicked = tk.IntVar()
+    isTicked.set(True)
     buttonDiv = tk.Canvas(top)
 
     msTextLabel = tk.Label(buttonDiv, text="Frame speed (ms): ")
     msTextLabel.pack(side=tk.LEFT)
 
     msVal = tk.StringVar()
-    msVal.set("50")
+    msVal.set("5")
     msEntry = tk.Entry(buttonDiv, width=5, textvariable=msVal)
     msEntry.pack(side=tk.LEFT)
 

@@ -3,20 +3,20 @@ import Solution
 import matplotlib.pyplot as plt
 import Graphics
 
-airtime = Solution.hangtime
+airtime = Solution.hangtime # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
-pathlength = 100  # Length of path
-trials = 10  # Population size
+pathlength = 100
+populationSize = 100
 # Generations to try before giving up (not all levels are possible with x lives)
-maxGenerations = 1000
-gamerLives = 5  # Number of lives each agentGets (hit obstacle = lose 1 life)
-levelDifficulty = 2  # Minimum number of spaces between obstacles, lower = harder
+maxGenerations = 2500
+gamerLives = 2  # Number of lives each agentGets (hit obstacle = lose 1 life)
+levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
 
 prevGen = []
 jumpLoc = []
 longestSolutions = []  # Longest solution length for each generation
+averageSolutions = [] # Average solution length for each generation
 longestOverallSolution = []  # Will be filled with longest Solution found (the path itself, not the length)
-
 
 class avatar:
     lives = gamerLives
@@ -191,23 +191,28 @@ def makeToBinary(moves):
 def doRun():
     global prevGen
     global longestSolutions
+    global averageSolutions
     global longestOverallSolution
 
     jumpLoc.clear()
     solutions = []
     average = 0
     longest = []  # Longest solution found in this generation
-    for i in range(trials):  # make list of Solutions and get average score
+    for i in range(populationSize):  # make list of Solutions and get average score
         solution = convertBinary(prevGen[i].pattern)
-        if len(solution.moves) >= pathlength:
+        """if len(solution.moves) >= pathlength:
             longestSolutions += [len(solution.moves)]
-            return [True, solution.moves]
-        elif len(solution.moves) > len(longest):
+            averageSolutions += [0]
+            return [True, solution.moves]"""
+        if len(solution.moves) > len(longest):
             longest = solution.moves
         average += len(solution.moves)
         solutions += [solution]
-    average = average/trials
+    average = average/populationSize
     longestSolutions += [len(longest)]
+    averageSolutions += [average]
+    if len(longest) >= pathlength:
+        return [True, longest]
     if len(longest) > len(longestOverallSolution):
         longestOverallSolution = longest
 
@@ -218,21 +223,21 @@ def doRun():
 
     prevGen.clear()
 
-    for i in range(trials):  # randomly select and breed parents
+    for i in range(populationSize):  # randomly select and breed parents
         parent1 = solutions[random.randint(0, len(solutions)-1)]
         parent2 = solutions[random.randint(0, len(solutions)-1)]
         thisChild = Solution.Solution(parent1, parent2)
         binaryMoves = makeToBinary(thisChild.moves)
         prevGen += [PassOn(len(binaryMoves), binaryMoves)]
 
-    RunNextTrial(p, trials, prevGen)
+    RunNextTrial(p, populationSize, prevGen)
     return [False, []]
 
 
 # Setup path
 print("Creating path")
 p = GenerateEasyPath(levelDifficulty)
-RunFirstTrial(p, trials)
+RunFirstTrial(p, populationSize)
 
 # Keep running until solution is found
 print("Trying to find a solution...")
@@ -265,11 +270,16 @@ Graphics.main()
 
 # Plot the longest solutions
 print("Plotting solution lengths")
+axes = plt.gca()
+axes.set_xlim([0,len(longestSolutions)])
+axes.set_ylim([0,pathlength])
 xaxis = []
 for i in range(len(longestSolutions)):
     xaxis += [i]
 plt.title("Solution Length over Time")
 plt.xlabel("Generation")
 plt.ylabel("Longest Solution")
-plt.plot(xaxis, longestSolutions)
+plt.plot(xaxis,averageSolutions, label="Average Solution Length", ls='--', color='grey')
+plt.plot(xaxis, longestSolutions, label="Longest Solution", color='blue')
+plt.legend()
 plt.show()
