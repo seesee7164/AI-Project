@@ -3,20 +3,22 @@ import Solution
 import matplotlib.pyplot as plt
 import Graphics
 
-airtime = Solution.hangtime # Ticks the agent is in the air for
+airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
-pathlength = 100
+pathlength = 150
 populationSize = 100
 # Generations to try before giving up (not all levels are possible with x lives)
-maxGenerations = 2500
-gamerLives = 2  # Number of lives each agentGets (hit obstacle = lose 1 life)
-levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
+maxGenerations = 1000
+gamerLives = 3  # Number of lives each agentGets (hit obstacle = lose 1 life)
+levelDifficulty = 2  # Minimum number of spaces between obstacles, lower = harder
 
 prevGen = []
 jumpLoc = []
 longestSolutions = []  # Longest solution length for each generation
-averageSolutions = [] # Average solution length for each generation
-longestOverallSolution = []  # Will be filled with longest Solution found (the path itself, not the length)
+averageSolutions = []  # Average solution length for each generation
+# Will be filled with longest Solution found (the path itself, not the length)
+longestOverallSolution = []
+
 
 class avatar:
     lives = gamerLives
@@ -200,10 +202,6 @@ def doRun():
     longest = []  # Longest solution found in this generation
     for i in range(populationSize):  # make list of Solutions and get average score
         solution = convertBinary(prevGen[i].pattern)
-        """if len(solution.moves) >= pathlength:
-            longestSolutions += [len(solution.moves)]
-            averageSolutions += [0]
-            return [True, solution.moves]"""
         if len(solution.moves) > len(longest):
             longest = solution.moves
         average += len(solution.moves)
@@ -271,15 +269,16 @@ Graphics.main()
 # Plot the longest solutions
 print("Plotting solution lengths")
 axes = plt.gca()
-axes.set_xlim([0,len(longestSolutions)])
-axes.set_ylim([0,pathlength])
+axes.set_xlim([0, len(longestSolutions)])
+axes.set_ylim([0, pathlength])
 xaxis = []
 for i in range(len(longestSolutions)):
     xaxis += [i]
 plt.title("Solution Length over Time")
 plt.xlabel("Generation")
 plt.ylabel("Longest Solution")
-plt.plot(xaxis,averageSolutions, label="Average Solution Length", ls='--', color='grey')
+plt.plot(xaxis, averageSolutions,
+         label="Average Solution Length", ls='--', color='grey')
 plt.plot(xaxis, longestSolutions, label="Longest Solution", color='blue')
 plt.legend()
 plt.show()

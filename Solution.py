@@ -9,9 +9,10 @@ hang: Jumped within the last [Solution.hangtime] tickes
 dead: Dead from this point forward
 """
 
-hangtime = 3
-jumpChance = .3
-mutationChance = .01
+hangtime = 3 # Number of ticks the agent remains in the air for
+jumpChance = .3 # % chance that the agent will jump
+mutationChance = .005 # % chance of a mutation occurring for each tick
+deleteMoves = 3 # How many moves after a jump to delete
 
 class Solution:
 	def __init__(self, parent1=None, parent2=None):
@@ -86,8 +87,8 @@ class Solution:
 		# delete anything where it's hanging in the air
 		while self.moves[-1] == 'hang':
 			del self.moves[-1]
-		#delete last two moves (or 1 or 0 if it's not long enough)
-		for i in range(hangtime + 1):
+		#delete last couple moves
+		for i in range(deleteMoves):
 			if len(self.moves) > 0:
 				del self.moves[-1]
 
