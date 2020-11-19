@@ -91,6 +91,10 @@ class Level:
         w.create_rectangle(x1, y1, x2, y2, fill=skyColor)
 
     def animate(self, top, w, leaveTrail, frameSpeed, i=0):
+        # Not a complete solution, movements aren't to the end
+        if len(self.movements) <= i:
+            return
+
         if i >= len(self.level): 
             if not leaveTrail: 
                 self.partialDrawLevel(w, i-1)
@@ -137,7 +141,7 @@ class Level:
 
 def main():
     global SQUARESIZE # squares will be SQUARESIZE by SQUARESIZE pixels in area
-    SQUARESIZE = 15 # yes we need two lines here
+    SQUARESIZE = 10 # yes we need two lines here
 
     l = Level(variability=3, readIn="data.txt")
     

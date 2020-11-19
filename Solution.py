@@ -9,11 +9,11 @@ hang: Jumped within the last [Solution.hangtime] tickes
 dead: Dead from this point forward
 """
 
-hangtime = 1
+hangtime = 3
+jumpChance = .3
+mutationChance = .1
 
 class Solution:
-	jumpChance = .3
-
 	def __init__(self, parent1=None, parent2=None):
 		random.seed()
 		self.moves = []
@@ -50,7 +50,7 @@ class Solution:
 				longer[i] = self.pickMove()
 
 			# 10% chance of just picking a totally different move (should be moved to up top, but idk what to name it)
-			if(random.randint(0, 10) == 0):
+			if(random.random() < mutationChance):
 				self.moves += [self.pickMove()]
 			else:
 				# 50-50 chance of which parent it draws from
@@ -68,7 +68,7 @@ class Solution:
 
 	# Randomly pick a move
 	def newMove(self):
-		if random.random() <= self.jumpChance:
+		if random.random() <= jumpChance:
 			self.moves += ['jump']
 			for i in range(hangtime):
 				self.moves += ['hang']
@@ -76,7 +76,7 @@ class Solution:
 			self.moves += ['stay']
 
 	def pickMove(self):
-		if random.random() <= self.jumpChance:
+		if random.random() <= jumpChance:
 			return 'jump'
 		else:
 			return 'stay'
@@ -87,7 +87,7 @@ class Solution:
 		while self.moves[-1] == 'hang':
 			del self.moves[-1]
 		#delete last two moves (or 1 or 0 if it's not long enough)
-		for i in range(hangtime+1):
+		for i in range(hangtime + 1):
 			if len(self.moves) > 0:
 				del self.moves[-1]
 
@@ -96,7 +96,7 @@ class Solution:
 		if self.parent1 is not None or self.parent2 is not None:
 			self.parent1.printLineage(level+1)
 			self.parent2.printLineage(level+1)
-		print(' ' * level*2, end='')
+		print(' ' * (level*2), end='')
 		print(self.moves)
 
 	# Heuristic function to compare them
