@@ -2,6 +2,7 @@ import random
 import Solution
 import matplotlib.pyplot as plt
 import Graphics
+import sys
 
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
@@ -263,8 +264,11 @@ for i in range(len(runResult[1])):
 f.write(runString)
 f.close()
 
-print("Displaying best solution")
-#Graphics.main()
+if "-na" not in sys.argv:
+    print("Displaying best solution")
+    Graphics.main()
+else:
+    print("Skipping animation.")
 
 # Plot the longest solutions
 print("Plotting solution lengths")
