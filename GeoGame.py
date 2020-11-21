@@ -7,12 +7,12 @@ import sys
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
 pathlength = 150
-populationSize = 25
+populationSize = 100
 # Generations to try before giving up (not all levels are possible with x lives)
-maxGenerations = 1000
+maxGenerations = 250
 gamerLives = 1  # Number of lives each agentGets (hit obstacle = lose 1 life)
 levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
-percentKeep = 0.1 # How much of the population to keep or purge
+percentKeep = 0.05 # How much of the population to keep or purge
 
 prevGen = []
 jumpLoc = []
