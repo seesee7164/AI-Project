@@ -287,14 +287,14 @@ for i in range(len(runResult[1])):
 f.write(runString)
 f.close()
 
-if "-na" not in sys.argv:
+if "-na" not in sys.argv and "-g" not in sys.argv:
     if "-g" not in sys.argv: print("Displaying best solution")
     Graphics.main()
 else:
     if "-g" not in sys.argv: print("Skipping animation.")
 
 # Plot the longest solutions
-if "-np" not in sys.argv:
+if "-np" not in sys.argv and "-g" not in sys.argv:
     if "-g" not in sys.argv: print("Plotting solution lengths")
     axes = plt.gca()
     axes.set_xlim([0, len(longestSolutions)])
