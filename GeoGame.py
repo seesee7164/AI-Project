@@ -4,6 +4,25 @@ import matplotlib.pyplot as plt
 import Graphics
 import sys
 
+'''
+FLAGS:
+-na         no animation
+-np         no plotting
+-g          print nothing but number of generations
+-d <n>      delete n moves
+-ps <n>     population size set to n
+-pk <f>     percentKeep set to float f
+-mc <f>     mutationChance in Solution.py set to float f
+'''
+
+def getFlagVal(flag):
+    for i, arg in sys.argv:
+        if arg == flag:
+            try: return sys.argv[i+1]
+            except: 
+                print("Error in fetching flag value.")
+                sys.exit(1)
+
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
 pathlength = 150
@@ -13,6 +32,9 @@ maxGenerations = 250
 gamerLives = 1  # Number of lives each agentGets (hit obstacle = lose 1 life)
 levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
 percentKeep = 0.05 # How much of the population to keep or purge
+
+if "-ps" in sys.argv: populationSize = int(getFlagVal("-ps"))
+if "-pk" in sys.argv: percentKeep = float(getFlagVal("-pk"))
 
 prevGen = []
 jumpLoc = []
@@ -226,7 +248,8 @@ def runGeneration():
     for i in range(populationSize):  # randomly select and breed parents
         parent1 = solutions[random.randint(0, len(solutions)-1)]
         parent2 = solutions[random.randint(0, len(solutions)-1)]
-        thisChild = Solution.Solution(parent1, parent2)
+        if "-mc" in sys.argv: thisChild = Solution.Solution(parent1, parent2, float(getFlagVal("-mc")))
+        else: thisChild = Solution.Solution(parent1, parent2)
         binaryMoves = makeToBinary(thisChild.moves)
         prevGen += [PassOn(len(binaryMoves), binaryMoves)]
 
@@ -234,20 +257,20 @@ def runGeneration():
     return [False, []]
 
 # Setup path
-print("Creating path")
+if "-g" not in sys.argv: print("Creating path")
 p = GenerateEasyPath(levelDifficulty)
 RunFirstTrial(p, populationSize)
 
 # Keep running until solution is found
-print("Trying to find a solution...")
+if "-g" not in sys.argv: print("Trying to find a solution...")
 runResult = None
 for i in range(maxGenerations):
     runResult = runGeneration()
     if runResult[0] == True:
-        print("Found one in ", len(longestSolutions), " generations!")
+        if "-g" not in sys.argv: print("Found one in ", len(longestSolutions), " generations!")
         break
 if runResult[0] == False:
-    print("Couldn't find one :(")
+    if "-g" not in sys.argv: print("Couldn't find one :(")
     runResult[1] = longestOverallSolution
 
 # Put into file to view graphics at any time, then display it running
@@ -265,24 +288,27 @@ f.write(runString)
 f.close()
 
 if "-na" not in sys.argv:
-    print("Displaying best solution")
+    if "-g" not in sys.argv: print("Displaying best solution")
     Graphics.main()
 else:
-    print("Skipping animation.")
+    if "-g" not in sys.argv: print("Skipping animation.")
 
 # Plot the longest solutions
-print("Plotting solution lengths")
-axes = plt.gca()
-axes.set_xlim([0, len(longestSolutions)])
-axes.set_ylim([0, pathlength])
-xaxis = []
-for i in range(len(longestSolutions)):
-    xaxis += [i]
-plt.title("Solution Length over Time")
-plt.xlabel("Generation")
-plt.ylabel("Longest Solution")
-plt.plot(xaxis, averageSolutions,
-         label="Average Solution Length", ls='--', color='grey')
-plt.plot(xaxis, longestSolutions, label="Solution Length", color='blue')
-plt.legend()
-plt.show()
+if "-np" not in sys.argv:
+    if "-g" not in sys.argv: print("Plotting solution lengths")
+    axes = plt.gca()
+    axes.set_xlim([0, len(longestSolutions)])
+    axes.set_ylim([0, pathlength])
+    xaxis = []
+    for i in range(len(longestSolutions)):
+        xaxis += [i]
+    plt.title("Solution Length over Time")
+    plt.xlabel("Generation")
+    plt.ylabel("Longest Solution")
+    plt.plot(xaxis, averageSolutions,
+            label="Average Solution Length", ls='--', color='grey')
+    plt.plot(xaxis, longestSolutions, label="Longest Solution", color='blue')
+    plt.legend()
+    plt.show()
+else:
+    if "-g" not in sys.argv: print("Skipping plot")

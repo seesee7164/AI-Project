@@ -15,11 +15,12 @@ mutationChance = .005 # % chance of a mutation occurring for each tick
 deleteMoves = 5 # How many moves after a jump to delete
 
 class Solution:
-	def __init__(self, parent1=None, parent2=None):
+	def __init__(self, parent1=None, parent2=None, mutationChanceOverride=0.0):
 		random.seed()
 		self.moves = []
 		self.parent1 = parent1
 		self.parent2 = parent2
+		if mutationChanceOverride != 0.0: mutationChance = mutationChanceOverride
 
 		if parent1 is None or parent2 is None:
 			return
