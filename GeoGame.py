@@ -6,11 +6,12 @@ import Graphics
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
 pathlength = 150
-populationSize = 100
+populationSize = 25
 # Generations to try before giving up (not all levels are possible with x lives)
 maxGenerations = 1000
-gamerLives = 3  # Number of lives each agentGets (hit obstacle = lose 1 life)
-levelDifficulty = 2  # Minimum number of spaces between obstacles, lower = harder
+gamerLives = 1  # Number of lives each agentGets (hit obstacle = lose 1 life)
+levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
+percentKeep = 0.1 # How much of the population to keep or purge
 
 prevGen = []
 jumpLoc = []
@@ -98,7 +99,7 @@ def GeneratePath():
 def GenerateEasyPath(c=3):
     path = [[0, 0]]
     count = 0
-    for i in range(pathlength - 1):
+    for i in range(pathlength - 2):
         a = 0
         b = 0
         if (count > 0):
@@ -110,6 +111,7 @@ def GenerateEasyPath(c=3):
             b = 1
             count = c
         path.append([a, b])
+    path.append([0,0])
     return path
 
 
@@ -190,7 +192,7 @@ def makeToBinary(moves):
     return ret
 
 
-def doRun():
+def runGeneration():
     global prevGen
     global longestSolutions
     global averageSolutions
@@ -214,10 +216,9 @@ def doRun():
     if len(longest) > len(longestOverallSolution):
         longestOverallSolution = longest
 
-    newSolutions = solutions
-    for i in range(len(solutions)-1, 0, -1):  # purge em
-        if len(solutions[i].moves) < average:
-            del solutions[i]
+    # Purge anything but the best
+    solutions.sort(key=lambda x: x.moves)
+    solutions = solutions[int(len(solutions)*(1-percentKeep)):]
 
     prevGen.clear()
 
@@ -231,7 +232,6 @@ def doRun():
     RunNextTrial(p, populationSize, prevGen)
     return [False, []]
 
-
 # Setup path
 print("Creating path")
 p = GenerateEasyPath(levelDifficulty)
@@ -241,7 +241,7 @@ RunFirstTrial(p, populationSize)
 print("Trying to find a solution...")
 runResult = None
 for i in range(maxGenerations):
-    runResult = doRun()
+    runResult = runGeneration()
     if runResult[0] == True:
         print("Found one in ", len(longestSolutions), " generations!")
         break
@@ -264,7 +264,7 @@ f.write(runString)
 f.close()
 
 print("Displaying best solution")
-Graphics.main()
+#Graphics.main()
 
 # Plot the longest solutions
 print("Plotting solution lengths")
@@ -279,6 +279,6 @@ plt.xlabel("Generation")
 plt.ylabel("Longest Solution")
 plt.plot(xaxis, averageSolutions,
          label="Average Solution Length", ls='--', color='grey')
-plt.plot(xaxis, longestSolutions, label="Longest Solution", color='blue')
+plt.plot(xaxis, longestSolutions, label="Solution Length", color='blue')
 plt.legend()
 plt.show()

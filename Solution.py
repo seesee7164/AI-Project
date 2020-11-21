@@ -12,7 +12,7 @@ dead: Dead from this point forward
 hangtime = 3 # Number of ticks the agent remains in the air for
 jumpChance = .3 # % chance that the agent will jump
 mutationChance = .005 # % chance of a mutation occurring for each tick
-deleteMoves = 3 # How many moves after a jump to delete
+deleteMoves = 5 # How many moves after a jump to delete
 
 class Solution:
 	def __init__(self, parent1=None, parent2=None):
