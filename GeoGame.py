@@ -26,7 +26,7 @@ def getFlagVal(flag):
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
 pathlength = 150
-populationSize = 50
+populationSize = 25
 # Generations to try before giving up (not all levels are possible with x lives)
 maxGenerations = 250
 gamerLives = 1  # Number of lives each agentGets (hit obstacle = lose 1 life)
@@ -274,7 +274,10 @@ for i in range(maxGenerations):
             print(len(longestSolutions))
         break
 if runResult[0] == False:
-    if "-g" not in sys.argv: print("Couldn't find one :(")
+    if "-g" not in sys.argv:
+        print("Couldn't find one :(")
+    else:
+        print(-1)
     runResult[1] = longestOverallSolution
 
 # Put into file to view graphics at any time, then display it running

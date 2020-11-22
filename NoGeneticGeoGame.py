@@ -26,12 +26,12 @@ def getFlagVal(flag):
 airtime = Solution.hangtime  # Ticks the agent is in the air for
 jumpchance = Solution.jumpChance  # % chance that it will jump at any given tick
 pathlength = 150
-populationSize = 100
+populationSize = 25
 # Generations to try before giving up (not all levels are possible with x lives)
 maxGenerations = 250
 gamerLives = 1  # Number of lives each agentGets (hit obstacle = lose 1 life)
 levelDifficulty = 3  # Minimum number of spaces between obstacles, lower = harder
-percentKeep = 0.05 # How much of the population to keep or purge
+percentKeep = 0.1 # How much of the population to keep or purge
 
 if "-ps" in sys.argv: populationSize = int(getFlagVal("-ps"))
 if "-pk" in sys.argv: percentKeep = float(getFlagVal("-pk"))
@@ -266,10 +266,10 @@ def runGeneration():
     return [False, []]
 
 def runGenerationRandom():
-    global prevGenRandom
-    global longestSolutionsRandom
-    global averageSolutionsRandom
-    global longestOverallSolutionRandom
+    global prevGen
+    global longestSolutions
+    global averageSolutions
+    global longestOverallSolution
 
     jumpLoc.clear()
     solutions = []
@@ -308,7 +308,10 @@ for i in range(maxGenerations):
         if "-g" not in sys.argv: print("Found one in ", len(longestSolutions), " generations!")
         break
 if runResult[0] == False:
-    if "-g" not in sys.argv: print("Couldn't find one :(")
+    if "-g" not in sys.argv:
+        print("Couldn't find one :(")
+    else:
+        print(-1)
     runResult[1] = longestOverallSolution
     runtime.append(longestOverallSolution)
     
