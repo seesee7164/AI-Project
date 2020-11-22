@@ -16,6 +16,7 @@ deleteMoves = 5 # How many moves after a jump to delete
 
 class Solution:
 	def __init__(self, parent1=None, parent2=None, mutationChanceOverride=0.0):
+		global mutationChance
 		random.seed()
 		self.moves = []
 		self.parent1 = parent1

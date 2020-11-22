@@ -16,7 +16,8 @@ FLAGS:
 '''
 
 def getFlagVal(flag):
-    for i, arg in sys.argv:
+    for i in range(len(sys.argv)):
+        arg = sys.argv[i]
         if arg == flag:
             try: return sys.argv[i+1]
             except: 
@@ -267,7 +268,10 @@ runResult = None
 for i in range(maxGenerations):
     runResult = runGeneration()
     if runResult[0] == True:
-        if "-g" not in sys.argv: print("Found one in ", len(longestSolutions), " generations!")
+        if "-g" not in sys.argv:
+            print("Found one in ", len(longestSolutions), " generations!")
+        else:
+            print(len(longestSolutions))
         break
 if runResult[0] == False:
     if "-g" not in sys.argv: print("Couldn't find one :(")
