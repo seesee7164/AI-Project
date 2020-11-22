@@ -250,8 +250,7 @@ def runGeneration():
     for i in range(populationSize):  # randomly select and breed parents
         parent1 = solutions[random.randint(0, len(solutions)-1)]
         parent2 = solutions[random.randint(0, len(solutions)-1)]
-        if "-mc" in sys.argv: thisChild = Solution.Solution(parent1, parent2, float(getFlagVal("-mc")))
-        else: thisChild = Solution.Solution(parent1, parent2)
+        thisChild = Solution.Solution(parent1, parent2, sys.argv)
         binaryMoves = makeToBinary(thisChild.moves)
         prevGen += [PassOn(len(binaryMoves), binaryMoves)]
 

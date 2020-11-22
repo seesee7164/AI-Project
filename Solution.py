@@ -1,6 +1,7 @@
 from enum import Enum
 import random
 import copy
+import sys
 
 """Types of moves each tick:
 jump: Jump in this tick
@@ -9,18 +10,28 @@ hang: Jumped within the last [Solution.hangtime] tickes
 dead: Dead from this point forward
 """
 
+def solution_getFlagVal(sysargs, flag):
+    for i, arg in enumerate(sysargs):
+        if arg == flag:
+            try: return sysargs[i+1]
+            except: 
+                print("Error in fetching flag value.")
+                sys.exit(1)
+
 hangtime = 3 # Number of ticks the agent remains in the air for
 jumpChance = .3 # % chance that the agent will jump
 mutationChance = .005 # % chance of a mutation occurring for each tick
 deleteMoves = 5 # How many moves after a jump to delete
 
 class Solution:
-	def __init__(self, parent1=None, parent2=None, mutationChanceOverride=0.0):
+	def __init__(self, parent1=None, parent2=None, sysargs=[]):
 		random.seed()
 		self.moves = []
 		self.parent1 = parent1
 		self.parent2 = parent2
-		if mutationChanceOverride != 0.0: mutationChance = mutationChanceOverride
+
+		if "-mc" in sysargs: mutationChance = float(solution_getFlagVal(sysargs ,"-mc"))
+		if "-d" in sysargs: deleteMoves = int(solution_getFlagVal(sysargs ,"-d"))
 
 		if parent1 is None or parent2 is None:
 			return
