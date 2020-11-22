@@ -16,7 +16,7 @@ FLAGS:
 '''
 
 def getFlagVal(flag):
-    for i, arg in sys.argv:
+    for i, arg in enumerate(sys.argv):
         if arg == flag:
             try: return sys.argv[i+1]
             except: 
