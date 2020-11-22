@@ -16,7 +16,7 @@ FLAGS:
 '''
 
 def getFlagVal(flag):
-    for i, arg in enumerate(sys.argv):
+    for i, arg in sys.argv:
         if arg == flag:
             try: return sys.argv[i+1]
             except: 
@@ -35,6 +35,13 @@ percentKeep = 0.05 # How much of the population to keep or purge
 
 if "-ps" in sys.argv: populationSize = int(getFlagVal("-ps"))
 if "-pk" in sys.argv: percentKeep = float(getFlagVal("-pk"))
+
+prevGen = []
+jumpLoc = []
+longestSolutions = []  # Longest solution length for each generation
+averageSolutions = []  # Average solution length for each generation
+# Will be filled with longest Solution found (the path itself, not the length)
+longestOverallSolution = []
 
 prevGen = []
 jumpLoc = []
@@ -258,22 +265,70 @@ def runGeneration():
     RunNextTrial(p, populationSize, prevGen)
     return [False, []]
 
+def runGenerationRandom():
+    global prevGenRandom
+    global longestSolutionsRandom
+    global averageSolutionsRandom
+    global longestOverallSolutionRandom
+
+    jumpLoc.clear()
+    solutions = []
+    average = 0
+    longest = []  # Longest solution found in this generation
+    for i in range(populationSize):  # make list of Solutions and get average score
+        solution = convertBinary(prevGen[i].pattern)
+        if len(solution.moves) > len(longest):
+            longest = solution.moves
+        average += len(solution.moves)
+        solutions += [solution]
+    average = average/populationSize
+    longestSolutions += [len(longest)]
+    averageSolutions += [average]
+    if len(longest) >= pathlength:
+        return [True, longest]
+    if len(longest) > len(longestOverallSolution):
+        longestOverallSolution = longest
+
+    prevGen.clear()
+
+    RunFirstTrial(p, populationSize)
+    return [False, []]
+
 # Setup path
 if "-g" not in sys.argv: print("Creating path")
 p = GenerateEasyPath(levelDifficulty)
 RunFirstTrial(p, populationSize)
-
-# Keep running until solution is found
-if "-g" not in sys.argv: print("Trying to find a solution...")
+runtime = []
+# Keep running until solution is found Randomly
+if "-g" not in sys.argv: print("Trying to find a solution Randomly...")
 runResult = None
 for i in range(maxGenerations):
-    runResult = runGeneration()
+    runResult = runGenerationRandom()
     if runResult[0] == True:
         if "-g" not in sys.argv: print("Found one in ", len(longestSolutions), " generations!")
         break
 if runResult[0] == False:
     if "-g" not in sys.argv: print("Couldn't find one :(")
     runResult[1] = longestOverallSolution
+    runtime.append(longestOverallSolution)
+    
+#to run multiple times
+# for i in range(10):
+#     prevGenRandom.clear()
+#     longestSolutionsRandom.clear()
+#     averageSolutionsRandom.clear()
+#     longestOverallSolutionRandom.clear()
+#     if "-g" not in sys.argv: print("Trying to find a solution Randomly...")
+#     runResult = None
+#     for i in range(maxGenerations):
+#         runResult = runGenerationRandom()
+#         if runResult[0] == True:
+#             if "-g" not in sys.argv: print("Found one in ", len(longestSolutions), " generations!")
+#             break
+#     if runResult[0] == False:
+#         if "-g" not in sys.argv: print("Couldn't find one :(")
+#         runResult[1] = longestOverallSolution
+#         runtime.append(longestOverallSolution)
 
 # Put into file to view graphics at any time, then display it running
 f = open("data.txt", 'w')
